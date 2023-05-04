@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
 export const useAxios = (url) => {
@@ -7,10 +7,10 @@ export const useAxios = (url) => {
   const [isError, setIsError] = useState(false);
   const [data, setData] = useState([]);
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     axios
       .get(url)
-      .then((res) => res.json())
+      .then((res) => res)
       .then((data) => {
         setData(data);
         setIsLoading(false);
@@ -19,11 +19,11 @@ export const useAxios = (url) => {
         setIsError(true);
         setIsLoading(false);
       });
-  };
+  }, [url]);
 
   useEffect(() => {
     getData();
-  }, [url]);
+  }, [url, getData]);
 
   return [isLoading, isError, data];
 };
